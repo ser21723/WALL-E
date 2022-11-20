@@ -1,12 +1,12 @@
 //******************************************************************************
 //   UNIVERSIDAD DEL VALLE DE GUATEMALA
-//   IE2023 PROGRAAMACI�N DE MICROCONTROLADORES 
+//   IE2023 PROGRAAMACIÓN DE MICROCONTROLADORES 
 //   AUTOR: MICHELLE SERRANO
 //   COMPILADOR: XC8 (v1.41), MPLAB X IDE (v6.00)
 //   PROYECTO: PROYECTO 2 - WALL-E
 //   HARDWARE: PIC16F887
 //   CREADO: 09/11/2022
-//   �LTIMA MODIFCACI�N: 18/11/2022
+//   ÚLTIMA MODIFCACIÓN: 18/11/2022
 
 #include <xc.h>
 
@@ -63,7 +63,7 @@ unsigned char   PC_MN = 0;
 unsigned char   MENU = 0;
 unsigned char   Boolean = 0;
 
-//Instrucciones comunicaci�n serial
+//Instrucciones comunicación serial
 char Instrucciones1 [] = "Instrucciones";
 char Instrucciones2 [] = "Servo uno: q --> izquierda   w --> derecha";
 char Instrucciones3 [] = "Servo dos: a --> izquierda   s --> derecha";
@@ -73,7 +73,7 @@ char despedida [] = {"UTILIZACION MANUAL"};
 //                              FUNCIONES
 //******************************************************************************
 
-//Mapeo de valor anal�gico
+//Mapeo de valor analógico
 unsigned char NumIteraciones (unsigned char ValorPot)
 {
     if (ValorPot <19)
@@ -126,7 +126,7 @@ unsigned char NumIteraciones (unsigned char ValorPot)
     }
 }
 
-//Configuraci�n para guardar en la EEPROM
+//Configuración para guardar en la EEPROM
 void writeToEEPROM(unsigned char data, unsigned char address){
     EEADR = address;
     EEDAT = data;
@@ -149,12 +149,12 @@ void writeToEEPROM(unsigned char data, unsigned char address){
     return;
 }
 
-//Configuraci�n para leer de la EEPROM
+//Configuración para leer de la EEPROM
 unsigned char   readFromEEPROM(unsigned char   address){
     EEADR = address;        // direccion a leer
     EECON1bits.EEPGD = 0;   // memoria de datos
     EECON1bits.RD = 1;      // hace una lectura
-    unsigned char  data = EEDAT;   // guardar el dato leído de EEPROM
+    unsigned char  data = EEDAT;   // guardar el dato leÃ­do de EEPROM
     __delay_ms(20);
     return data;
 }
@@ -234,7 +234,7 @@ void readFromEEPROMPOTS(void){
     return;
 }
 
-//Comunicaci�n serial
+//Comunicación serial
 void Envio_caracter (char a){
     while (TXSTAbits.TRMT == 0){
        
@@ -257,11 +257,11 @@ void Envio_Cadena (char* cadena){
 }
 
 //******************************************************************************
-//                              INTERRUPCI�?N
+//                              INTERRUPCIÃ?N
 //******************************************************************************
 void __interrupt() isr(void){    
     
-    //Interrupción ADC
+    //InterrupciÃ³n ADC
     if (ADIF == 1) {
         if (Reading == 0 && PC_MN == 0){
         switch (ADCON0bits.CHS){
@@ -276,15 +276,15 @@ void __interrupt() isr(void){
                 break;
         
             case 2:
-                CCPR2L = (ADRESH>>1)+124; //180�
+                CCPR2L = (ADRESH>>1)+124; //180°
                 CCP2CONbits.DC2B1 = ADRESH & 0b01;//precision
                 CCP2CONbits.DC2B0 = (ADRESL>>7);
                 ADCON0bits.CHS = 3;     //cambio para el multiplexeo
                 break;
             
            case 3:
-                CCPR1L = (ADRESH>>1)+124;//habilita 180°
-                CCP1CONbits.DC1B1 = ADRESH & 0b01; //añadir precision/resolucion
+                CCPR1L = (ADRESH>>1)+124;//habilita 180Â°
+                CCP1CONbits.DC1B1 = ADRESH & 0b01; //aÃ±adir precision/resolucion
                 CCP1CONbits.DC1B0 = (ADRESL>>7);
                 ADCON0bits.CHS = 0;
                 break;
@@ -292,7 +292,7 @@ void __interrupt() isr(void){
       }
         __delay_us(20);             //delay de 20 us
         PIR1bits.ADIF = 0;          //limpieza de bandera
-        ADCON0bits.GO = 1;          //inicio de conversión
+        ADCON0bits.GO = 1;          //inicio de conversiÃ³n
     }
     
    // Salida en 0 para CCP manual con TMR0
@@ -388,7 +388,7 @@ void main(void) {
     ADCON0bits.CHS0  =   0;         //se selecciona el canal AN0
     ADCON1bits.VCFG1 =   0;         //voltajes referencia default
     ADCON1bits.VCFG0 =   0;           
-    ADCON1bits.ADFM  =   0;         //justificación izquierda
+    ADCON1bits.ADFM  =   0;         //justificaciÃ³n izquierda
     ADCON0bits.ADON  =   1;            
     __delay_us(20);                 //delay de 20 us
     
@@ -438,29 +438,29 @@ void main(void) {
     
     
     //TX y RX
-    TXSTAbits.SYNC = 0;             //as�ncrono
+    TXSTAbits.SYNC = 0;             //asíncrono
     TXSTAbits.BRGH = 1;             
-    BAUDCTLbits.BRG16 = 1;          //utilizaci�n de 16 bits 
+    BAUDCTLbits.BRG16 = 1;          //utilización de 16 bits 
     
     SPBRG = 207;						
     SPBRGH = 0;
     //
     RCSTAbits.SPEN = 1;             //UART     
-    RCSTAbits.CREN = 1;             //recepci�n
-    TXSTAbits.TXEN = 1;             //transmici�n
+    RCSTAbits.CREN = 1;             //recepción
+    TXSTAbits.TXEN = 1;             //transmición
     
 
     //INTERRUPCIONES
     PIR1bits.ADIF = 0;
-    PIE1bits.ADIE = 1;              //interrupción ADC
+    PIE1bits.ADIE = 1;              //interrupciÃ³n ADC
     INTCONbits.PEIE = 1;            
     INTCONbits.GIE  = 1; 
-    INTCONbits.T0IE  = 1;           //interrupción del TMR0
+    INTCONbits.T0IE  = 1;           //interrupciÃ³n del TMR0
     PIE1bits.TMR1IE = 1;            //interrupcion del TMR1
     ADCON0bits.GO = 1; 
     
     while (1){
-    //Envio caracteres comunicaci�n serial    
+    //Envio caracteres comunicación serial    
         if (PC_MN == 1 && RCIF == 1){
             switch (RCREG){
                 case 119:                    //w
@@ -498,25 +498,6 @@ void main(void) {
                         POT1 = 0;
                     }
                     break;
-                    
-                case 120:                    //x
-                    if (POT2 < 16){
-                        POT2 = POT2 + 3;
-                    }
-                    else{
-                        POT2 = 18;
-                    }
-                    break;
-
-                case 122:                    //z
-                    if (POT2 > 3){
-                        POT2 = POT2 - 3;
-                    }
-                    else{
-                        POT2 = 0;
-                    }
-                    break;
-
             }
         }
         
